@@ -1,3 +1,11 @@
+#include <stdio.h>
+#include <string.h>
+#include <fstream>
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
 
 class SudokuGrid {
     public:
@@ -5,7 +13,7 @@ class SudokuGrid {
         SudokuGrid(vector <vector <int> > pGrid);
         void solve();
         void populateGrid();
-        void printGrid();
+        void printSolvedGrid();
         bool isValid();
     
     private:

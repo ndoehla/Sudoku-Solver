@@ -3,55 +3,16 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include "sudokuSolver.h";
 
 
 using namespace std;
 
 
-
-class SudokuGrid {
-    public:
-        SudokuGrid();
-        SudokuGrid(vector <vector <int> > pGrid);
-        void solve();
-        void populateGrid();
-        void printGrid();
-        bool isValid();
-    
-    private:
-        vector <vector <int> > aGrid;
-        bool isValidCol(int num);
-        bool isValidRow(int num);
-        bool isValidSquare(int num);
-
-};
-
-
 int main() {
-    
-    // vector <int> row2{2,0,0,0,0,8,0,3,1};
-    // vector <int> row3{0,0,0,0,7,3,2,0,0};
-    // vector <int> row4{7,0,0,0,6,5,1,0,3};
-    // vector <int> row5{0,0,5,0,0,0,0,7,8};
-    // vector <int> row6{0,0,8,0,9,7,0,2,5};
-    // vector <int> row7{0,5,2,4,0,0,0,1,9};
-    // vector <int> row8{0,4,0,0,8,1,0,0,2};
-    // vector <int> row9{0,7,1,5,2,0,8,0,4};
-
-    // vector <vector <int> > aGrid;
-    // aGrid.push_back(row1);
-    // aGrid.push_back(row2);
-    // aGrid.push_back(row3);
-    // aGrid.push_back(row4);
-    // aGrid.push_back(row5);
-    // aGrid.push_back(row6);
-    // aGrid.push_back(row7);
-    // aGrid.push_back(row8);
-    // aGrid.push_back(row9);
-
     SudokuGrid mygrid;
     mygrid.populateGrid();
-    mygrid.printGrid();
+    mygrid.printSolvedGrid();
 }
 
 
@@ -69,7 +30,7 @@ SudokuGrid::SudokuGrid(vector <vector <int> > pGrid) {
     }
 }
 
-void SudokuGrid::printGrid() {
+void SudokuGrid::printSolvedGrid() {
     cout << "\n   ----- My Solved Grid -----";
     cout << "\n\n" << endl;
     for(int i = 0; i < 9; i++) {
