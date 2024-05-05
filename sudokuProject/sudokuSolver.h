@@ -9,12 +9,13 @@ using namespace std;
 
 class SudokuGrid {
     public:
-        SudokuGrid(string pPuzzleName);
+        SudokuGrid();
         void solve();
         void populateGrid();
         string getPuzzleName();
         void makePuzzle(string filename); 
-        void printSolvedGrid(string filename);
+        void printSolvedGrid();
+        void writeSolution();
         bool checkSolution(vector <vector <int> > mySolution);
     
     private:
@@ -28,6 +29,7 @@ class SudokuGrid {
         bool isValidSquare(vector <vector <int> > &board, int row, int col, int value);
         bool solveGrid(vector <vector <int> > &board, int row, int col);
         void makeSolvedPuzzle(string filename);
+        void setPuzzleName(string name);
         
 
 };

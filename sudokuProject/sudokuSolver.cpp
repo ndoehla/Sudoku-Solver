@@ -5,20 +5,19 @@ using namespace std;
 
 
 int main() {
-    SudokuGrid mygrid("Puzzle of the Day: May 5th");
+    SudokuGrid mygrid;
     mygrid.populateGrid();
     mygrid.solve();
-    
+    mygrid.writeSolution();
 }
 
-
-SudokuGrid::SudokuGrid(string pPuzzleName) : puzzleName(pPuzzleName){}
+SudokuGrid::SudokuGrid(){}
 
 string SudokuGrid::getPuzzleName() {return puzzleName;}
 
 
-void SudokuGrid::printSolvedGrid(string filename) {
-    ifstream myfile(filename+"Solved.txt");
+void SudokuGrid::printSolvedGrid() {
+    ifstream myfile(getPuzzleName()+"Solved.txt");
 
     if(!myfile.is_open()) {
         throw invalid_argument("Could not find your sudoku puzzle");
@@ -34,11 +33,18 @@ void SudokuGrid::printSolvedGrid(string filename) {
 
 
 void SudokuGrid::populateGrid() {
+    string name;
+    cout << "\nEnter the name of today's puzzle: ";
+    getline(cin, name);
+    setPuzzleName(name);
+
+
     aGrid.clear();
     solvedGrid.clear();
+
     cout << "\nTo populate the sudoku grid, we will fill rows one at a time.\n" << endl;
     for(int i = 0; i < 9; i++) {
-        cout << "Please enter 9 numbers with no spaces in between them and then hit enter. Free cells are represented as the number \'0\'" << endl;
+        cout << "Please enter 9 numbers with no spaces in between them and then hit enter. Free cells are represented as the number \'0\':\n";
         string s;
         
         cin >> s;
@@ -102,41 +108,8 @@ void SudokuGrid::makePuzzle(string filename) {
 
 }
 
-void SudokuGrid::makeSolvedPuzzle(string filename) {
-    ofstream myfile;
-    myfile.open(filename+"Solved.txt");
-
-    if(!myfile.is_open()) {
-        throw invalid_argument("Could not create sudoku file.");
-    }
-
-    myfile << "\n   ----- " << filename << " Solved "<< "-----";
-    myfile << "\n\n" << endl;
-    for(int i = 0; i < 9; i++) {
-        if(i==0 || i== 3 || i == 6) {
-            myfile << "+---------+---------+---------+" << endl;
-        }
-        for(int j = 0; j < 9; j++) {
-            if(j==0 || j==3 || j==6) {
-                myfile << "| " << solvedGrid[i][j] << " ";
-
-            } else if (j==8) {
-                myfile << " " << solvedGrid[i][j] << " |" << endl;   
-            } else {
-                myfile << " " << solvedGrid[i][j] << " ";
-            }
-        }
-    }
-
-    myfile << "+---------+---------+---------+" << endl;
-
-    myfile.close();
-
-}
-
 void SudokuGrid::solve() {
     if(solveGrid(solvedGrid, 0, 0)) {
-
         makeSolvedPuzzle(getPuzzleName());
     }
     else {
@@ -144,6 +117,71 @@ void SudokuGrid::solve() {
     }
 }
 
+
+bool SudokuGrid::checkSolution(vector <vector <int> > mySolution) {
+    solve();
+    mySolution.shrink_to_fit();
+    solvedGrid.shrink_to_fit();
+
+    if(mySolution.size()!=9) return false;
+
+    for(int i = 0; i < 9; i++) {
+        mySolution[i].shrink_to_fit();
+        if(mySolution[i].size()!=9) {
+            return false;
+        }
+    }
+
+    for(int j = 0; j < 9; j++) {
+        for(int k = 0; k < 9; k++) {
+            if(mySolution[j][k]!=solvedGrid[j][k]) return false;
+        }
+    }
+    return true;
+
+}
+
+void SudokuGrid::writeSolution() {
+    vector <vector <int> > solutionVector;
+
+    for(int i = 0; i < 9; i++) {
+        cout << "For your solution, please enter 9 numbers with no spaces in between them and then hit enter (subsequent rows to follow):" << endl;
+        string s;
+        cin >> s;
+        if(s.size()!=9) {
+            throw invalid_argument("You did not enter the correct input.");
+        }
+        
+        vector <int> row;
+        int pos = 0;
+        for(int j=0; j<s.size(); j++) {
+            if(s[j] < 47 || s[j]>57) {
+                throw invalid_argument("Solution only takes digits 1-9.");
+            }
+            int val = s[j] - '0';
+            row.push_back(val);
+        }
+        solutionVector.push_back(row);
+    }
+
+    if(checkSolution(solutionVector)) {
+        cout << "Your inputted solution is correct!!!" << endl;
+    }
+
+    else {
+        cout << "Incorrect solution. Try solving again!" << endl;
+    }
+}
+
+
+
+
+
+
+
+
+
+//PRIVATE FUNCTIONS
 bool SudokuGrid::isValidCol(vector <vector <int> > &board, int col, int value) {
     for(int i = 0; i < 9; i++) {
         if(board[i][col]==value) return false;
@@ -203,4 +241,38 @@ bool SudokuGrid::solveGrid(vector <vector <int> > &board, int row, int col) {
     return false; // board not possible to solve
 
 }
+
+void SudokuGrid::makeSolvedPuzzle(string filename) {
+    ofstream myfile;
+    myfile.open(filename+"Solved.txt");
+
+    if(!myfile.is_open()) {
+        throw invalid_argument("Could not create sudoku file.");
+    }
+
+    myfile << "\n   ----- " << filename << " Solved "<< "-----";
+    myfile << "\n\n" << endl;
+    for(int i = 0; i < 9; i++) {
+        if(i==0 || i== 3 || i == 6) {
+            myfile << "+---------+---------+---------+" << endl;
+        }
+        for(int j = 0; j < 9; j++) {
+            if(j==0 || j==3 || j==6) {
+                myfile << "| " << solvedGrid[i][j] << " ";
+
+            } else if (j==8) {
+                myfile << " " << solvedGrid[i][j] << " |" << endl;   
+            } else {
+                myfile << " " << solvedGrid[i][j] << " ";
+            }
+        }
+    }
+
+    myfile << "+---------+---------+---------+" << endl;
+
+    myfile.close();
+
+}
+
+void SudokuGrid::setPuzzleName(string name) {puzzleName = name;}
 
